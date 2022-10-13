@@ -6,12 +6,12 @@
 #define PIN_OPEN_SWITCH 3
 #define PIN_CLOSE_SWITCH 13
 #define PIN_GREEN_LED 5
-#define PIN_RED_LED 6
-#define PIN_BUTTON 7
-#define PIN_ENGINE_OPEN 8
-#define PIN_ENGINE_CLOSE 9
-#define PIN_ACTIVATE_ENGINE 10
-#define PIN_REMOTE_CONTROL_IR 11
+#define PIN_RED_LED 4
+#define PIN_BUTTON 2
+#define PIN_ENGINE_OPEN 11
+#define PIN_ENGINE_CLOSE 10
+#define PIN_ACTIVATE_ENGINE 12
+#define PIN_REMOTE_CONTROL_IR 6
 #define PIN_POWER_METER A1
 // END REGION PIN
 
@@ -124,8 +124,9 @@ int defineEvent()
 }
 
 void turnLight(int pinLedOn,int pinLedOff) {
-    digitalWrite(pinLedOn, HIGH);
     digitalWrite(pinLedOff, LOW);
+    digitalWrite(pinLedOn, HIGH);
+    
 }
 
 void moveEngine(int direction)
@@ -133,23 +134,24 @@ void moveEngine(int direction)
   if (direction == DIRECTION_STOP_ENGINE)
   {
     digitalWrite(PIN_ACTIVATE_ENGINE,LOW);
-  digitalWrite(PIN_ENGINE_CLOSE,LOW);
+    digitalWrite(PIN_ENGINE_CLOSE,LOW);
     digitalWrite(PIN_ENGINE_OPEN,LOW);
     
   }
   if (direction == DIRECTION_OPEN_ENGINE)
   {
     
-    analogWrite(PIN_ACTIVATE_ENGINE,power);
+    digitalWrite(PIN_ACTIVATE_ENGINE,HIGH);
     digitalWrite(PIN_ENGINE_CLOSE,LOW);
-    digitalWrite(PIN_ENGINE_OPEN,HIGH);
+    analogWrite(PIN_ENGINE_OPEN,power);
   }
   if (direction == DIRECTION_CLOSE_ENGINE)
   {
     
-    analogWrite(PIN_ACTIVATE_ENGINE,power);
-    digitalWrite(PIN_ENGINE_CLOSE,HIGH);
+    digitalWrite(PIN_ACTIVATE_ENGINE,HIGH);
     digitalWrite(PIN_ENGINE_OPEN,LOW);
+    analogWrite(PIN_ENGINE_CLOSE,power);
+    
   }
 }
 
