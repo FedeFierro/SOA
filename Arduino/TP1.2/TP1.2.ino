@@ -1,5 +1,6 @@
 // REGION LIBRARY
 #include <IRremote.h> //sensor IR
+#include <SoftwareSerial.h> //Seriar For bluetooth
 // END REGION LIBRARY
 
 // REGION PIN
@@ -12,6 +13,8 @@
 #define PIN_ENGINE_CLOSE 10
 #define PIN_ACTIVATE_ENGINE 12
 #define PIN_REMOTE_CONTROL_IR 6
+#define PIN_TX_BT_RX 8
+#define PIN_RX_BT_TX 9
 #define PIN_POWER_METER A1
 // END REGION PIN
 
@@ -38,6 +41,13 @@
 #define DIRECTION_OPEN_ENGINE 1
 // REGION DIRECTION ENGINE
 
+//REGION BLUETOOTH FLAGS
+#define FLAG_INFO_UPPER 'I'
+#define FLAG_INFO_LOWER 'i'
+#define FLAG_ACTION_UPPER 'A'
+#define FLAG_ACTION_LOWER 'a'
+//END REGION BLUETOOTH FLAGS
+
 // REGION OTHERS
 #define DEFAULT_BAUND_RATE 9600
 #define ARRAY_LENGTH 2
@@ -46,7 +56,14 @@
 #define INDEX_ONE 1 
 // END REGION OTHERS
 
+//REGION INIT SOFTWARE SERIAL
+SoftwareSerial bt(PIN_RX_BT_TX ,PIN_TX_BT_RX);
+//END REGION INIT SOFTWARE SERIAL
+
+
 // REGION VARIABLES
+char btFlag="";
+int powerVal=0;
 int power = 0;
 int state = STATE_INITIAL;
 int event = 0;
@@ -56,6 +73,7 @@ int buttonRemote = LOW;
 int finalOpen = LOW;
 int finalClosed = HIGH;
 int remoteCode = -1;
+int btAction =LOW;
 //INDICES DE ARRAYS DE SENSORES DE FIN DE CARRERA 
 int indexSwitchSensors[ARRAY_LENGTH]={INDEX_ZERO,INDEX_ONE};
 // END REGION VARIABLES
@@ -69,6 +87,7 @@ void initInputs()
   pinMode(PIN_REMOTE_CONTROL_IR, INPUT);
   IrReceiver.begin(PIN_REMOTE_CONTROL_IR, ENABLE_LED_FEEDBACK);
   pinMode(PIN_POWER_METER, INPUT);
+  pinMode(PIN_RX_BT_TX, INPUT);
 }
 
 void initOutputs()
@@ -78,6 +97,8 @@ void initOutputs()
   pinMode(PIN_ENGINE_OPEN, OUTPUT);
   pinMode(PIN_ENGINE_CLOSE, OUTPUT);
   pinMode(PIN_ACTIVATE_ENGINE, OUTPUT);
+  pinMode(PIN_TX_BT_RX, OUTPUT);
+  
 }
 
 //INTERCAMBIA EL ORDEN DE LOS INDICES DE ARRAY DE SENSORES DE FIN DE CARRERA 
@@ -110,9 +131,13 @@ int alternateSwitchEvent()
 int defineEvent()
 {
     int oldManualActionPush = buttonPush;
-  int oldManualActionRemote = buttonRemote;
+    int oldManualActionRemote = buttonRemote;
+    int oldBtAction = btAction;
     readSensors();
-    if((buttonPush == HIGH && oldManualActionPush==LOW) || (buttonRemote == HIGH && oldManualActionRemote==LOW)){
+    readBluetooh();
+    if((buttonPush == HIGH && oldManualActionPush==LOW) 
+    || (buttonRemote == HIGH && oldManualActionRemote==LOW)
+    || (btAction == HIGH && oldBtAction==LOW)){
         return EVENT_MANUAL_ACTION;
     }
     int sensorEvent = alternateSwitchEvent();
@@ -182,14 +207,34 @@ void readSensors() {
     int remoteVal = readRemote();
     buttonRemote = remoteVal;
     // Potenciometro
-    int powerMeterVal = analogRead(PIN_POWER_METER);
-    power = powerMeterVal / POWER_TRANSFORM;
+    powerVal = analogRead(PIN_POWER_METER);
+    power = powerVal / POWER_TRANSFORM;
     // Fin de carrera cierre
     int closedSwitchVal = digitalRead(PIN_CLOSE_SWITCH);
     finalClosed = closedSwitchVal;
     // Fin de carrera apertura
     int openSwitchVal = digitalRead(PIN_OPEN_SWITCH);
     finalOpen = openSwitchVal;
+}
+
+void readBluetooh() {
+  btFlag ="";
+  if (bt.available()> 0){   
+    btFlag = bt.read(); 
+  }
+btAction =  LOW;
+  switch(btFlag){
+      case FLAG_INFO_UPPER:
+      case FLAG_INFO_LOWER:
+        bt.println(powerVal);
+        break;
+      case FLAG_ACTION_UPPER:
+      case FLAG_ACTION_LOWER:
+        btAction =HIGH; 
+        break;
+      default:
+        break;                
+    }
 }
 template <typename T>
 void logAction(T message)
@@ -387,6 +432,7 @@ void setup()
   Serial.begin(DEFAULT_BAUND_RATE);
   initInputs();
   initOutputs();
+  bt.begin(DEFAULT_BAUND_RATE);
 }
 
 void loop()

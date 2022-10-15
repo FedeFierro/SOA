@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">UnLaM SOA</string>
+    <string name="menu_arduino">Arduino</string>
+    <string name="menu_android">Android</string>
+</resources>
