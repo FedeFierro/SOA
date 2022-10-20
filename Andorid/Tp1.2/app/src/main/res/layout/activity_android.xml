@@ -6,61 +6,42 @@
     android:layout_height="match_parent"
     tools:context=".view.AndroidActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/container_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="20dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            >
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layoutCardImage"
-                android:padding="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        android:id="@+id/layoutMap"
+        >
                 <ImageView
                     android:id="@+id/imgView"
-                    android:contentDescription="image"
+                    android:contentDescription="map"
                     android:layout_width="match_parent"
-                    android:layout_height="194dp"
-                    app:srcCompat="@drawable/de_lorean"
-                    android:scaleType="centerCrop"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/mapa_unlam_portrait"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/textView"
-                    />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/android_coming_soon"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-
-                    app:layout_constraintTop_toBottomOf="@id/imgView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed" />
+                    />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"        >
+        <ImageView
+            android:id="@+id/imgPin"
+            android:contentDescription="pin"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_map_pin"
+            android:translationZ="1dp"
+            />
 
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+    </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
