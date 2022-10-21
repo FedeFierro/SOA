@@ -31,7 +31,6 @@ public class AndroidPresenter extends BasePresenter{
             case Constants.NEW_LOCATION_TRANSFORM:
                 this.view.setInfo(params);
                 break;
-
         }
 
     }

@@ -27,6 +27,7 @@ public class LocationTransformRunnable implements Runnable {
             boolean inside = unlamPolygon.pointInside(this.point);
             if (!inside) {
                 model.setInfo(new String[]{Constants.ERROR_MESSAGE, "La Ubicación No esta dentro del Rango"});
+                return;
             }
             String widthStr = this.model.getInfo(new String[]{Constants.MAP_WIDTH});
             String heightStr = this.model.getInfo(new String[]{Constants.MAP_HEIGHT});
