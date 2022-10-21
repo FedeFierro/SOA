@@ -31,7 +31,11 @@ public class AndroidModel implements Contract.Model{
     }
     @Override
     public void doInBackground() {
-
+        boolean gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if(!gps_enabled){
+            this.presenter.setInfo(new String[]{Constants.ERROR_MESSAGE,"Debe Activar la Ubicacion"});
+            return;
+        }
         if (ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context,
