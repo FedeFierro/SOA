@@ -2,6 +2,7 @@ package com.unlam.soa.tp1_2.entities;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;
+import com.unlam.soa.tp1_2.entities.location.CustomLatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +40,18 @@ public class UnlamPolygon {
         this.distanceLat = Math.sqrt(Math.pow((south.longitude-east.longitude),2) + (Math.pow((south.latitude-east.latitude),2)));
         this.isReady=true;
     }
-    public CustomLatLng transForm(int width,int height,LatLng point){
+    public CustomLatLng transform(int width, int height, LatLng point){
+        CustomLatLng  westTransform= transformation(width,height,west);
+        CustomLatLng newPoint= transformation(width,height,point);
 
+        double lngCoef =  ((double) width-westTransform.longitude)/westTransform.latitude;
+        double latCoef = ((double)height/westTransform.latitude)/westTransform.longitude;
+        double lng = newPoint.longitude + (newPoint.latitude*lngCoef);
+        double lat =newPoint.latitude +(newPoint.longitude * latCoef);
+        return new CustomLatLng((int) lat,(int)lng);
+
+    }
+    private CustomLatLng transformation(int width, int height, LatLng point){
         double coefLng =width /distanceLng;
         double coefLat =height/distanceLat;
         //Rotacion
@@ -56,8 +67,7 @@ public class UnlamPolygon {
         double scaleLng = lngO * coefLng;
         double latAbs = Math.abs(scaleLat);
         double lngAbs =Math.abs(scaleLng);
-        return new CustomLatLng(latAbs,lngAbs);
-
+        return new CustomLatLng((int) latAbs,(int)lngAbs);
     }
 
 

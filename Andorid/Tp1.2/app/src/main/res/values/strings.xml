@@ -9,5 +9,6 @@
     <string name="arduino_card_button_action_text">Enviar</string>
     <string name="arduino_card_text_tittle">Información</string>
     <string name="arduino_card_text_text">Simula el valor del potenciómetro mostrando un valor random cada 5 segundos</string>
-    <string name="android_coming_soon">Proximamente...</string>
+    <string name="android_map_description">Mapa UnLaM</string>
+    <string name="android_pin_description">Location Pin</string>
 </resources>
