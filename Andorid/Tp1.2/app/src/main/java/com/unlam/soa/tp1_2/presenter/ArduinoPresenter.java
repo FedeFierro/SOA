@@ -17,12 +17,22 @@ public class ArduinoPresenter extends BasePresenter {
     }
 
     @Override
-    public void sendMessage(String text) {
-        view.setInfo(text);
+    public void setInfo(String[] params) {
+        view.setInfo(params);
     }
 
     @Override
     public void starBackgroundTask() {
         model.doInBackground();
+    }
+
+    @Override
+    public void onDestroy() {
+        this.model.onDestroy();
+    }
+
+    @Override
+    public String getInfo(String[] params) {
+        return null;
     }
 }
