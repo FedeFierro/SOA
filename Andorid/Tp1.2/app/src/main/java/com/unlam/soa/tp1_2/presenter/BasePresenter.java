@@ -29,7 +29,7 @@ public abstract class BasePresenter implements Contract.Presenter {
                 .show();
     }
     public void showError(String msg){
-        Snackbar.make(constraintLayout, msg, Snackbar.LENGTH_SHORT)
+        Snackbar.make(constraintLayout, msg, Snackbar.LENGTH_LONG)
                 .setBackgroundTint(colorError)
                 .setTextColor(colorWithe)
                 .setAnchorView(R.id.bottom_navigation)
