@@ -9,9 +9,9 @@ import java.util.List;
 
 public class UnlamPolygon {
     private final List<LatLng> polygon = new ArrayList<>();
-    private final LatLng east = new LatLng(-34.668405,-58.567452 );
+    private final LatLng west = new LatLng(-34.668405,-58.567452 );
     private final LatLng south =new LatLng(-34.671788,-58.562982);
-    private final LatLng west = new LatLng(-34.669175,-58.560067 );
+    private final LatLng east = new LatLng(-34.669175,-58.560067 );
     private final  LatLng north =new LatLng(-34.665801,-58.564541 );
     private double sin;
     private double cos;
@@ -20,11 +20,11 @@ public class UnlamPolygon {
     public boolean isReady=false;
 
     public UnlamPolygon(){
-        polygon.add(east);
-        polygon.add(south);
         polygon.add(west);
-        polygon.add(north);
+        polygon.add(south);
         polygon.add(east);
+        polygon.add(north);
+        polygon.add(west);
         this.buildTransformation();
     }
 
@@ -32,20 +32,21 @@ public class UnlamPolygon {
         return PolyUtil.containsLocation(point, polygon,false);
     }
     private void buildTransformation(){
-        double gradient = (north.latitude-east.latitude) /(north.longitude-east.longitude);
+        double gradient = (north.latitude- west.latitude) /(north.longitude- west.longitude);
         double angle =Math.atan(gradient);
         this.sin = Math.sin(-angle);
         this.cos = Math.cos(-angle);
-        this.distanceLng = Math.sqrt(Math.pow((north.longitude-east.longitude),2) + (Math.pow((north.latitude-east.latitude),2)));
-        this.distanceLat = Math.sqrt(Math.pow((south.longitude-east.longitude),2) + (Math.pow((south.latitude-east.latitude),2)));
+        this.distanceLng = Math.sqrt(Math.pow((north.longitude- west.longitude),2) + (Math.pow((north.latitude- west.latitude),2)));
+        this.distanceLat = Math.sqrt(Math.pow((south.longitude- west.longitude),2) + (Math.pow((south.latitude- west.latitude),2)));
         this.isReady=true;
     }
     public CustomLatLng transform(int width, int height, LatLng point){
-        CustomLatLng  westTransform= transformation(width,height,west);
         CustomLatLng newPoint= transformation(width,height,point);
 
-        double lngCoef =  ((double) width-westTransform.longitude)/westTransform.latitude;
-        double latCoef = ((double)height/westTransform.latitude)/westTransform.longitude;
+        //Correccion
+        CustomLatLng  refTransform= transformation(width,height, east);
+        double lngCoef =  ((double) width-refTransform.longitude)/refTransform.latitude;
+        double latCoef = ((double)height/refTransform.latitude)/refTransform.longitude;
         double lng = newPoint.longitude + (newPoint.latitude*lngCoef);
         double lat =newPoint.latitude +(newPoint.longitude * latCoef);
         return new CustomLatLng((int) lat,(int)lng);
@@ -57,8 +58,8 @@ public class UnlamPolygon {
         //Rotacion
         double rotationLat = (point.longitude*this.sin) + (point.latitude*this.cos);
         double rotationLng = (point.longitude*this.cos) - (point.latitude*this.sin);
-        double rotationLat0 = (this.east.longitude*this.sin) + (this.east.latitude*this.cos);
-        double rotationLng0 = (this.east.longitude*this.cos) - (this.east.latitude*this.sin);
+        double rotationLat0 = (this.west.longitude*this.sin) + (this.west.latitude*this.cos);
+        double rotationLng0 = (this.west.longitude*this.cos) - (this.west.latitude*this.sin);
         //Deplazar a punto 0
         double latO = rotationLat -  rotationLat0;
         double lngO = rotationLng - rotationLng0;

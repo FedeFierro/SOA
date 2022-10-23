@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.unlam.soa.tp1_2.entities.UnlamPolygon;
-import com.unlam.soa.tp1_2.model.AndroidModel;
 
 import org.junit.Test;
 
